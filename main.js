@@ -90,8 +90,8 @@ let isHoveringTornado = false;
 map.on("mousemove", (e) => {
   // Hitbox around cursor so it's not too finicky
   const bbox = [
-    [e.point.x - 12, e.point.y - 12],
-    [e.point.x + 12, e.point.y + 12]
+    [e.point.x - 6, e.point.y - 6],
+    [e.point.x + 6, e.point.y + 6]
   ];
 
   const features = map.queryRenderedFeatures(bbox, {
@@ -111,10 +111,10 @@ map.on("mousemove", (e) => {
   const p = f.properties;
   const coords = f.geometry.coordinates.slice();
 
-  const efText =
-    p.ef_display && p.ef_display !== "Unknown"
-      ? p.ef_display
-      : "Unknown";
+const efText =
+  p.ef === null || p.ef === undefined || p.ef === "null"
+    ? "Unknown"
+    : `EF${p.ef}`;
 
   const windText =
     p.wind_low != null && p.wind_high != null && p.wind_low !== "null" && p.wind_high !== "null"
@@ -139,13 +139,13 @@ map.on("mousemove", (e) => {
   const html = `
     <strong>${p.state}</strong><br/>
     Date: ${dateText}<br/>
-    EF: ${efText}<br/>
-    Wind speed: ${windText}<br/>
-    Distance traveled: ${lengthText}<br/>
-    Max width: ${widthText}<br/>
+    EF Rating: ${efText}<br/>
+    Wind Speed Range: ${windText}<br/>
+    Distance Traveled: ${lengthText}<br/>
+    Max Width: ${widthText}<br/>
     Injuries: ${p.injuries}<br/>
     Deaths: ${p.deaths}<br/>
-    Damage: ${p.damage_property}
+    Property Damage in $: ${p.damage_property}
   `;
 
   map.getCanvas().style.cursor = "pointer";
