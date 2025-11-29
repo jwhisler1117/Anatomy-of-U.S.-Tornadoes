@@ -286,7 +286,6 @@ populateStateDropdown();
 
 function initEFHistogram() {
   const container = d3.select("#ef-histogram");
-
   const margin = { top: 10, right: 10, bottom: 20, left: 50 };
   const width = 280;
   const height = 120;
@@ -335,6 +334,9 @@ function updateEFHistogramForRange(start, end) {
   const y = initEFHistogram.y;
   const margin = initEFHistogram.margin;
   const height = initEFHistogram.height;
+
+  
+  const tooltip = d3.select("#chart-tooltip");
 
   
   const feats = tornadoData.features.filter((f) => {
@@ -394,6 +396,26 @@ function updateEFHistogramForRange(start, end) {
           ];
           return colors[d.ef] || "#999";
         })
+        
+.on("mouseover", function(event, d) {
+  tooltip
+    .style("display", "block")
+    .html(`<strong>EF${d.ef}</strong><br>${d.count} tornadoes`);
+
+  d3.select(this).attr("opacity", 0.7);
+})
+.on("mousemove", function(event) {
+  tooltip
+    .style("left", (event.pageX + 12) + "px")
+    .style("top", (event.pageY - 20) + "px");
+})
+.on("mouseout", function() {
+  tooltip.style("display", "none");
+  d3.select(this).attr("opacity", 1.0);
+})
+
+
+
         .call((enter) =>
           enter
             .transition()
@@ -418,6 +440,7 @@ function buildYearTimeline() {
   if (!tornadoData) return;
 
   const container = d3.select("#year-timeline");
+  const tooltip = d3.select("#chart-tooltip");
 
   const margin = { top: 10, right: 10, bottom: 20, left: 30 };
   const width = 280;
@@ -462,21 +485,38 @@ function buildYearTimeline() {
     .attr("width", x.bandwidth())
     .attr("height", (d) => y(0) - y(d.count))
     .attr("fill", "#60a5fa")
-    .on("mouseover", function () {
+    .on("mouseover", function(event, d) {
+      // highlight bar
       d3.select(this).attr("fill", "#facc15");
+
+      // show tooltip
+      tooltip
+        .style("display", "block")
+        .html(`<strong>${d.year}</strong><br>${d.count.toLocaleString()} tornadoes`);
     })
-    .on("mouseout", function (event, d) {
+    .on("mousemove", function(event, d) {
+      tooltip
+        .style("left", (event.pageX + 12) + "px")
+        .style("top", (event.pageY - 20) + "px");
+    })
+    .on("mouseout", function(event, d) {
+      // restore color depending on whether it's in the selected year range
       const range = getCurrentRangeSafe();
       const inRange =
         range && d.year >= range.start && d.year <= range.end;
+
       d3.select(this).attr("fill", inRange ? "#fb923c" : "#60a5fa");
+
+      // hide tooltip
+      tooltip.style("display", "none");
     })
     .on("click", (event, d) => {
-      
+      // Clicking a bar makes the range just that year
       stopPlaying();
       setYearRange(d.year, d.year);
     });
 
+  // Simple decade ticks
   const tickYears = years.filter((y) => y % 10 === 0);
 
   svg
@@ -493,6 +533,11 @@ function buildYearTimeline() {
         .attr("font-size", 8)
         .text((d) => d)
     );
+
+  // 🔹 Safety net: if the mouse leaves the whole SVG, hide tooltip
+  svg.on("mouseleave", () => {
+    tooltip.style("display", "none");
+  });
 
   buildYearTimeline.bars = bars;
 }
