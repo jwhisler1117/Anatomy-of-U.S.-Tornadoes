@@ -16,9 +16,9 @@ body {
 #sidebar {
   padding: 1rem 1.25rem;
   box-sizing: border-box;
-  border-right: 1px solid #333;   /* darker border to match dark theme */
-  background: #494955;            /* dark charcoal */
-  color: #f0f0f0;                 /* ensure text stays readable */
+  border-right: 1px solid #333;   
+  background: #2f2f36;            
+  color: #f0f0f0;                 
   overflow-y: auto;
 }
 
@@ -30,7 +30,7 @@ body {
 
 .subtitle {
   font-size: 0.9rem;
-  color: #f0f0f0;                 /* ensure text stays readable */
+  color: #f0f0f0;                
   margin-bottom: 1rem;
 }
 
@@ -257,4 +257,21 @@ label {
 
 .tornado-tooltip {
   pointer-events: none !important;
+}
+
+#sidebar {
+  scrollbar-width: thin;          /* Firefox */
+}
+
+#sidebar::-webkit-scrollbar {
+  width: 8px;                     /* Chrome/Safari */
+}
+
+#sidebar::-webkit-scrollbar-thumb {
+  background: #888; 
+  border-radius: 4px;
+}
+
+#sidebar::-webkit-scrollbar-thumb:hover {
+  background: #aaa;
 }
