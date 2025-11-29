@@ -61,12 +61,13 @@ function preprocessTornadoData() {
 function formatDollarsShort(val) {
   if (val == null || val === "null") return "Unknown";
   const n = Number(val);
-  if (!Number.isFinite(n) || n === 0) return "None reported";
+  if (!Number.isFinite(n) || n === 0) return "Unknown or none reported";
   if (n >= 1_000_000_000) return "$" + (n / 1_000_000_000).toFixed(1) + "B";
   if (n >= 1_000_000) return "$" + (n / 1_000_000).toFixed(1) + "M";
   if (n >= 1_000) return "$" + (n / 1_000).toFixed(1) + "K";
   return "$" + n.toLocaleString();
 }
+
 
 
 // --- 2. Load data and initialize ----------------------------------
