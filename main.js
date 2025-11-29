@@ -72,7 +72,7 @@ function formatDollarsShort(val) {
 
 // --- 2. Load data and initialize ----------------------------------
 
-Promise.all([d3.json("data/tornado_points.geojson")]).then(([geojson]) => {
+Promise.all([d3.json("./data/tornado_points.geojson")]).then(([geojson]) => {
   tornadoData = geojson;
 
   preprocessTornadoData();
